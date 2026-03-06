@@ -1,151 +1,376 @@
-const basket = document.getElementById("basket");
-const gameArea = document.getElementById("gameArea");
+/* =========================
+   ELEMENT
+========================= */
 
-const scoreEl = document.getElementById("score");
-const targetEl = document.getElementById("target");
-const alienEl = document.getElementById("alienCount");
+const basket = document.getElementById("basket")
+const gameArea = document.getElementById("gameArea")
 
-const startBtn = document.getElementById("startBtn");
-const pauseBtn = document.getElementById("pauseBtn");
-const continueBtn = document.getElementById("continueBtn");
-const restartBtn = document.getElementById("restartBtn");
+const scoreEl = document.getElementById("score")
+const targetEl = document.getElementById("target")
+const alienEl = document.getElementById("alienCount")
 
-const pauseScreen = document.getElementById("pauseScreen");
-const endScreen = document.getElementById("endScreen");
-const endMessage = document.getElementById("endMessage");
-const welcomeScreen = document.getElementById("welcomeScreen");
+const pauseBtn = document.getElementById("pauseBtn")
+const continueBtn = document.getElementById("continueBtn")
+const restartBtn = document.getElementById("restartBtn")
 
-const startSound = document.getElementById("startSound");
-const wrongSound = document.getElementById("wrongSound");
-const winSound = document.getElementById("winSound");
-const loseSound = document.getElementById("loseSound");
-const bgm = document.getElementById("bgm");
+const pauseScreen = document.getElementById("pauseScreen")
+const endScreen = document.getElementById("endScreen")
+const endMessage = document.getElementById("endMessage")
 
-let score=0;
-let alienCount=0;
-let target = Math.floor(Math.random() * (30 - 10 + 1)) + 10;
-let gameRunning=false;
-let paused=false;
-let speed=2;
-let spawnInterval;
+const wrongSound = document.getElementById("wrongSound")
+const winSound = document.getElementById("winSound")
+const loseSound = document.getElementById("loseSound")
+const bgm = document.getElementById("bgm")
 
-targetEl.textContent=target;
+const jumpscareSound = document.getElementById("jumpscareSound")
+
+const jumpscareScreen = document.getElementById("jumpscareScreen")
+const flash = document.getElementById("flashRed")
+
+/* intro */
+
+const slides = document.querySelectorAll(".introSlide")
+const skipBtn = document.getElementById("skipSlide")
+const introScreen = document.getElementById("introScreen")
+
+/* sound intro */
+
+const introSound = new Audio("introSound.mp3")
+introSound.loop = true
+
+const skipSound = new Audio("skip.mp3")
+
+/* =========================
+   GAME VARIABLE
+========================= */
+
+let score = 0
+let alienCount = 0
+let target = Math.floor(Math.random()*21)+10
+
+let gameRunning = false
+let paused = false
+let speed = 2
+let spawnInterval = null
+
+targetEl.textContent = target
+
+/* =========================
+   INTRO SLIDE SYSTEM
+========================= */
+
+let currentSlide = 0
+let slideTimer = null
+
+function startIntro(){
+
+introSound.currentTime = 0
+introSound.play().catch(()=>{})
+
+slideTimer = setInterval(nextSlide,20000)
+
+}
+
+function nextSlide(){
+
+slides[currentSlide].classList.remove("active")
+
+currentSlide++
+
+if(currentSlide >= slides.length){
+
+clearInterval(slideTimer)
+
+introSound.pause()
+
+introScreen.style.display = "none"
+
+startGame()
+
+return
+}
+
+slides[currentSlide].classList.add("active")
+
+}
+
+skipBtn.addEventListener("click",()=>{
+
+skipSound.currentTime = 0
+skipSound.play().catch(()=>{})
+
+nextSlide()
+
+})
+
+startIntro()
+
+/* =========================
+   ANIMALS
+========================= */
 
 const animals=[
-"download__32_-removebg-preview.png",
-"download__33_-removebg-preview.png",
-"download__36_-removebg-preview.png",
-"download__37_-removebg-preview.png"
-];
+"piqram.png",
+"lulu.png",
+"paso.png",
+"muti.png",
+"ule.png",
+"ara.png",
+"dindoy.png"
+]
 
 function spawnAnimal(){
-if(!gameRunning||paused) return;
 
-const img=document.createElement("img");
-img.classList.add("animal");
+if(!gameRunning || paused) return
 
-const isAlien=Math.random()<0.2;
-img.src=isAlien?"ALIEN_D-removebg-preview.png":animals[Math.floor(Math.random()*animals.length)];
-img.dataset.type=isAlien?"alien":"animal";
+const img=document.createElement("img")
+img.classList.add("animal")
 
-img.style.left=Math.random()*(window.innerWidth-80)+"px";
-img.style.top="-80px";
+const isAlien = Math.random() < 0.2
 
-gameArea.appendChild(img);
+img.src = isAlien ? "apla.png" : animals[Math.floor(Math.random()*animals.length)]
 
-let fall=setInterval(()=>{
-if(paused){clearInterval(fall);return;}
+img.dataset.type = isAlien ? "alien" : "animal"
 
-img.style.top=img.offsetTop+speed+"px";
+img.style.left = Math.random()*(window.innerWidth-80)+"px"
+img.style.top = "-80px"
 
-if(img.offsetTop>window.innerHeight){
-img.remove();
-clearInterval(fall);
+gameArea.appendChild(img)
+
+let fall = setInterval(()=>{
+
+if(paused){
+clearInterval(fall)
+return
 }
 
-checkCatch(img,fall);
+img.style.top = img.offsetTop + speed + "px"
 
-},20);
+if(img.offsetTop > window.innerHeight){
+
+img.remove()
+clearInterval(fall)
+
 }
+
+checkCatch(img,fall)
+
+},20)
+
+}
+
+/* =========================
+   CATCH SYSTEM
+========================= */
 
 function checkCatch(img,fall){
-const basketRect=basket.getBoundingClientRect();
-const imgRect=img.getBoundingClientRect();
+
+const basketRect = basket.getBoundingClientRect()
+const imgRect = img.getBoundingClientRect()
 
 if(
-imgRect.bottom>=basketRect.top &&
-imgRect.left<basketRect.right &&
-imgRect.right>basketRect.left
+imgRect.bottom >= basketRect.top &&
+imgRect.left < basketRect.right &&
+imgRect.right > basketRect.left
 ){
-clearInterval(fall);
-img.remove();
 
-if(img.dataset.type==="alien"){
-alienCount++;
-alienEl.textContent=alienCount;
-wrongSound.play();
-basket.style.opacity="0.3";
-setTimeout(()=>basket.style.opacity="1",200);
+clearInterval(fall)
+img.remove()
 
-if(alienCount>=5) endGame(false);
+/* alien */
 
-}else{
-score++;
-scoreEl.textContent=score;
-speed+=0.2;
+if(img.dataset.type === "alien"){
 
-if(score>=target) endGame(true);
+alienCount++
+alienEl.textContent = alienCount
+
+wrongSound.currentTime = 0
+wrongSound.play().catch(()=>{})
+
+/* basket blink */
+
+basket.style.opacity = "0.2"
+setTimeout(()=>{
+basket.style.opacity = "1"
+},150)
+
+if(alienCount >= 5){
+
+endGame(false)
+
 }
+
 }
+
+/* animal */
+
+else{
+
+score++
+scoreEl.textContent = score
+
+speed += 0.2
+
+if(score >= target){
+
+endGame(true)
+
 }
+
+}
+
+}
+
+}
+
+/* =========================
+   START GAME
+========================= */
 
 function startGame(){
-gameRunning=true;
-startSound.play();
-bgm.play().catch(()=>{});
-welcomeScreen.style.display="none";
-spawnInterval=setInterval(spawnAnimal,1000);
+
+gameRunning = true
+
+bgm.currentTime = 0
+bgm.play().catch(()=>{})
+
+spawnInterval = setInterval(spawnAnimal,1000)
+
 }
+
+/* =========================
+   END GAME
+========================= */
 
 function endGame(win){
-gameRunning=false;
-bgm.pause();
-clearInterval(spawnInterval);
-document.querySelectorAll(".animal").forEach(e=>e.remove());
-endScreen.classList.remove("hidden");
+
+gameRunning = false
+
+clearInterval(spawnInterval)
+
+document.querySelectorAll(".animal").forEach(e=>e.remove())
+
+bgm.pause()
 
 if(win){
-winSound.play();
-endMessage.textContent="MISSION SUCCESS";
-}else{
-loseSound.play();
-endMessage.textContent="Yahaha Nice Try!";
+
+winSound.currentTime = 0
+winSound.play().catch(()=>{})
+
+endScreen.classList.remove("hidden")
+endMessage.textContent = "MISSION SUCCESS"
+
 }
+
+else{
+
+flashRed()
+
+setTimeout(()=>{
+
+jumpscare()
+
+},400)
+
 }
+
+}
+
+/* =========================
+   FLASH EFFECT
+========================= */
+
+function flashRed(){
+
+flash.style.opacity = "1"
+
+setTimeout(()=>{
+flash.style.opacity = "0"
+},200)
+
+}
+
+/* =========================
+   JUMPSCARE
+========================= */
+
+function jumpscare(){
+
+jumpscareScreen.style.display = "flex"
+
+jumpscareSound.currentTime = 0
+jumpscareSound.play().catch(()=>{})
+
+setTimeout(()=>{
+
+jumpscareScreen.style.display = "none"
+
+loseSound.currentTime = 0
+loseSound.play().catch(()=>{})
+
+endScreen.classList.remove("hidden")
+endMessage.textContent = "GAME OVER"
+
+},8000)
+
+}
+
+/* =========================
+   CONTROLS
+========================= */
 
 pauseBtn.onclick=()=>{
-if(!gameRunning) return;
-paused=true;
-clearInterval(spawnInterval);
-pauseScreen.classList.remove("hidden");
-};
+
+if(!gameRunning) return
+
+paused = true
+
+clearInterval(spawnInterval)
+
+pauseScreen.classList.remove("hidden")
+
+}
 
 continueBtn.onclick=()=>{
-paused=false;
-pauseScreen.classList.add("hidden");
-clearInterval(spawnInterval);
-spawnInterval=setInterval(spawnAnimal,1000);
-};
 
-restartBtn.onclick=()=>location.reload();
-startBtn.onclick=startGame;
+paused = false
+
+pauseScreen.classList.add("hidden")
+
+spawnInterval = setInterval(spawnAnimal,1000)
+
+}
+
+/* restart */
+
+restartBtn.addEventListener("click",()=>{
+
+location.reload()
+
+})
+
+/* =========================
+   MOUSE
+========================= */
 
 document.addEventListener("mousemove",e=>{
-if(!gameRunning||paused) return;
-basket.style.left=e.clientX-basket.offsetWidth/2+"px";
-});
+
+if(!gameRunning || paused) return
+
+basket.style.left = e.clientX - basket.offsetWidth/2 + "px"
+
+})
+
+/* =========================
+   TOUCH
+========================= */
 
 document.addEventListener("touchmove",e=>{
-if(!gameRunning||paused) return;
-basket.style.left=e.touches[0].clientX-basket.offsetWidth/2+"px";
-});
+
+if(!gameRunning || paused) return
+
+e.preventDefault()
+
+basket.style.left = e.touches[0].clientX - basket.offsetWidth/2 + "px"
+
+},{passive:false})
