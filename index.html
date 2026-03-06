@@ -1,54 +1,122 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catch Cute Animals</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
-<div id="ui">
-  <div class="info">
-    <span>Score: <span id="score">0</span></span>
-    <span>Target: <span id="target">0</span></span>
-    <span>Alien: <span id="alienCount">0</span>/5</span>
-    <button id="pauseBtn">⏸</button>
-  </div>
+
+
+<div id="introScreen">
+
+<div class="introBox">
+
+<img class="introSlide active" src="wlc.png">
+<img class="introSlide" src="wrn.png">
+<img class="introSlide" src="wrng.png">
+<img class="introSlide" src="ttr.png">
+<img class="introSlide" src="enm.png">
+<img class="introSlide" src="scr.png">
+<img class="introSlide" src="trg.png">
+<img class="introSlide" src="anm.png">
+
 </div>
 
-<div id="welcomeScreen">
-  <button id="startBtn">PLAY</button>
-  <p class="welcomeText">
-    Welcome, enjoy the game.<br>
-    This game was made by mipu
-  </p>
+<button id="skipSlide">SKIP ▶</button>
+
 </div>
+
+
+
+
+
+<div id="ui">
+
+<div class="info">
+
+<span>Score: <span id="score">0</span></span>
+<span>Target: <span id="target">0</span></span>
+<span>Anomali: <span id="alienCount">0</span>/5</span>
+
+<button id="pauseBtn">⏸</button>
+
+</div>
+
+</div>
+
+
+
 
 <div id="pauseScreen" class="overlay hidden">
-  <div class="popup">
-    <h2>GAME PAUSED</h2>
-    <button id="continueBtn">▶ CONTINUE</button>
-  </div>
+
+<div class="popup">
+
+<h2>GAME PAUSED</h2>
+
+<button id="continueBtn">▶ CONTINUE</button>
+
 </div>
+
+</div>
+
+
+
+
 
 <div id="endScreen" class="overlay hidden">
-  <div class="popup">
-    <h2 id="endMessage"></h2>
-    <button id="restartBtn">⟳</button>
-  </div>
+
+<div class="popup">
+
+<h2 id="endMessage"></h2>
+
+<button id="restartBtn">⟳ RESTART</button>
+
 </div>
+
+</div>
+
+
+
+
 
 <div id="gameArea">
-  <img id="basket" src="Screenshot_2026-03-03_112835-removebg-preview.png">
+
+<img id="basket" src="Screenshot_2026-03-03_112835-removebg-preview-removebg-preview.png">
+
 </div>
 
-<audio id="startSound" src="universfield-video-game-bonus-323603.mp3"></audio>
+
+
+
+
+<div id="jumpscareScreen">
+
+<img id="jumpscareImg" src="jumpscare.png">
+
+</div>
+
+<div id="flashRed"></div>
+
+
+
+
+
+<audio id="jumpscareSound" src="jeremayjimenez-smile-dog-jumpscare-167171.mp3"></audio>
 <audio id="wrongSound" src="amaze98-reject-interface-sound-201948.mp3"></audio>
 <audio id="winSound" src="floraphonic-you-win-sequence-2-183949.mp3"></audio>
 <audio id="loseSound" src="freesound_community-080205_life-lost-game-over-89697.mp3"></audio>
-<audio id="bgm" src="WhatsApp Video 2026-03-03 at 14.32.18.mp3" loop></audio>
+<audio id="bgm" src="WhatsApp Video 2026-03-04 at 11.48.51.mp3" loop></audio>
+<audio id="bgm" src="alphix-game-over-417465_ZUXbYTwd.mp3" loop></audio>
+<audio id="loseSound" src="amaze98-reject-interface-sound-201948.mp3"></audio>
 
 <script src="script.js"></script>
+
 </body>
 </html>
