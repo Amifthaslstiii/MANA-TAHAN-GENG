@@ -1,6 +1,4 @@
-/* =========================
-   ELEMENT
-========================= */
+
 
 const basket = document.getElementById("basket")
 const gameArea = document.getElementById("gameArea")
@@ -27,7 +25,6 @@ const jumpscareSound = document.getElementById("jumpscareSound")
 const jumpscareScreen = document.getElementById("jumpscareScreen")
 const flash = document.getElementById("flashRed")
 
-/* intro */
 
 const slides = document.querySelectorAll(".introSlide")
 const skipBtn = document.getElementById("skipSlide")
@@ -40,9 +37,7 @@ introSound.loop = true
 
 const skipSound = new Audio("skip.mp3")
 
-/* =========================
-   GAME VARIABLE
-========================= */
+
 
 let score = 0
 let alienCount = 0
@@ -55,9 +50,7 @@ let spawnInterval = null
 
 targetEl.textContent = target
 
-/* =========================
-   INTRO SLIDE SYSTEM
-========================= */
+
 
 let currentSlide = 0
 let slideTimer = null
@@ -105,9 +98,7 @@ nextSlide()
 
 startIntro()
 
-/* =========================
-   ANIMALS
-========================= */
+
 
 const animals=[
 "piqram.png",
@@ -159,9 +150,7 @@ checkCatch(img,fall)
 
 }
 
-/* =========================
-   CATCH SYSTEM
-========================= */
+
 
 function checkCatch(img,fall){
 
@@ -177,7 +166,7 @@ imgRect.right > basketRect.left
 clearInterval(fall)
 img.remove()
 
-/* alien */
+
 
 if(img.dataset.type === "alien"){
 
@@ -187,7 +176,7 @@ alienEl.textContent = alienCount
 wrongSound.currentTime = 0
 wrongSound.play().catch(()=>{})
 
-/* basket blink */
+
 
 basket.style.opacity = "0.2"
 setTimeout(()=>{
@@ -202,7 +191,6 @@ endGame(false)
 
 }
 
-/* animal */
 
 else{
 
@@ -223,9 +211,7 @@ endGame(true)
 
 }
 
-/* =========================
-   START GAME
-========================= */
+
 
 function startGame(){
 
@@ -238,9 +224,7 @@ spawnInterval = setInterval(spawnAnimal,1000)
 
 }
 
-/* =========================
-   END GAME
-========================= */
+
 
 function endGame(win){
 
@@ -276,9 +260,7 @@ jumpscare()
 
 }
 
-/* =========================
-   FLASH EFFECT
-========================= */
+
 
 function flashRed(){
 
@@ -290,9 +272,7 @@ flash.style.opacity = "0"
 
 }
 
-/* =========================
-   JUMPSCARE
-========================= */
+
 
 function jumpscare(){
 
@@ -341,7 +321,7 @@ spawnInterval = setInterval(spawnAnimal,1000)
 
 }
 
-/* restart */
+
 
 restartBtn.addEventListener("click",()=>{
 
@@ -349,9 +329,7 @@ location.reload()
 
 })
 
-/* =========================
-   MOUSE
-========================= */
+
 
 document.addEventListener("mousemove",e=>{
 
@@ -361,9 +339,7 @@ basket.style.left = e.clientX - basket.offsetWidth/2 + "px"
 
 })
 
-/* =========================
-   TOUCH
-========================= */
+
 
 document.addEventListener("touchmove",e=>{
 
@@ -374,3 +350,4 @@ e.preventDefault()
 basket.style.left = e.touches[0].clientX - basket.offsetWidth/2 + "px"
 
 },{passive:false})
+
