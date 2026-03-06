@@ -30,7 +30,6 @@ const slides = document.querySelectorAll(".introSlide")
 const skipBtn = document.getElementById("skipSlide")
 const introScreen = document.getElementById("introScreen")
 
-/* sound intro */
 
 const introSound = new Audio("introSound.mp3")
 introSound.loop = true
@@ -350,4 +349,5 @@ e.preventDefault()
 basket.style.left = e.touches[0].clientX - basket.offsetWidth/2 + "px"
 
 },{passive:false})
+
 
